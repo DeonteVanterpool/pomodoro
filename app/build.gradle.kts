@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,11 +60,6 @@ dependencies {
     // Choose one of the following:
     // Material Design 3
     implementation(libs.androidx.material3)
-    // or skip Material Design and build directly on top of foundational components
-    implementation(libs.androidx.foundation)
-    // or only import the main APIs for the underlying toolkit systems,
-    // such as input and measurement/layout
-    implementation(libs.androidx.ui)
 
     // Android Studio Preview support
     implementation(libs.androidx.ui.tooling.preview)
