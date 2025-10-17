@@ -1,4 +1,4 @@
-package com.example.pomodoro
+package com.example.pomodoro.models
 
 public class TaskBuilder() {
     var title: String = "";

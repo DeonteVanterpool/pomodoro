@@ -35,6 +35,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pomodoro.models.Task
+import com.example.pomodoro.models.TaskBuilder
+import com.example.pomodoro.ui.navigation.AppNavHost
+import com.example.pomodoro.ui.navigation.AppScaffold
+import com.example.pomodoro.ui.navigation.Destination
+import com.example.pomodoro.ui.theme.AppTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,164 +54,25 @@ class MainActivity : AppCompatActivity() {
 @Preview
 @Composable
 fun App() {
-    val navController = rememberNavController()
-    var selectedDestination by rememberSaveable { mutableIntStateOf(Destination.TASKS.ordinal) }
-
-    val navigate = { s: String -> navController.navigate(s)}
-
-    Scaffold(
-        bottomBar = {
-            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-                Destination.entries.forEachIndexed { index, destination ->
-                    NavigationBarItem(
-                        selected = selectedDestination == index,
-                        onClick = {
-                            navController.navigate(destination.name)
-                            selectedDestination = index
-                        },
-                        label = { Text(destination.getLabel()) },
-                        icon = {},
-                    )
-                }
-            }
+    AppTheme {
+        val navController = rememberNavController()
+        var selectedDestination by rememberSaveable {
+            mutableIntStateOf(Destination.TASKS.ordinal)
         }
-    ) { contentPadding ->
-        AppNavHost(
-            navController = navController,
-            startDestination = Destination.TASKS.name,
-            modifier = Modifier.padding(contentPadding)
-        )
-    }
-}
 
-@Composable
-fun AppNavHost(
-    navController: NavHostController,
-    startDestination: String,
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier
-    ) {
-        composable(Destination.TASKS.name) {
-            TasksScreen()
-        }
-        composable(Destination.POMODORO.name) {
-            PomodoroScreen()
-        }
-    }
-}
-
-@Composable
-fun TasksScreen() {
-    var currentTask by remember { mutableStateOf<TaskBuilder?>(null) }
-    val taskList = remember { mutableStateListOf<Task>() }
-
-    fun createNewTaskHandler() {
-        currentTask = TaskBuilder()
-    }
-
-    fun cancelNewTaskHandler() {
-        currentTask = null
-    }
-
-    fun newTaskHandler(text: String) {
-        currentTask?.let {
-            it.title = text
-            taskList.add(it.build())
-            currentTask = null
-            return
-        }
-        throw UnsupportedOperationException("Current task is null!")
-    }
-
-    Column {
-        NewTask(currentTask, { text -> newTaskHandler(text) })
-        NewTaskButton({ createNewTaskHandler() }, { cancelNewTaskHandler() }, currentTask == null)
-        RenderTasks(taskList)
-    }
-}
-
-@Composable
-fun PomodoroScreen() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Pomodoro Timer",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Timer will be implemented here",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-}
-
-enum class Destination {
-    TASKS,
-    POMODORO;
-
-    fun getLabel(): String {
-        return if (this == TASKS) {
-            "Tasks"
-        } else {
-            "Pomodoro"
-        }
-    }
-}
-
-@Preview
-@Composable
-fun RenderTasks(tasks: List<Task>) {
-    Column {
-        Text("Tasks: ${tasks.size}", color = MaterialTheme.colorScheme.onBackground)
-        tasks.forEach { task ->
-            TaskItem(task = task, click = { TODO() })
-        }
-    }
-}
-
-@Composable
-fun TaskItem(task: Task, click: (Task) -> Unit) {
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp).clickable(onClick = {click(task)}),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onSurface),
-    ) {
-        Text(
-            text = task.title,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-        )
-    }
-}
-
-@Preview
-@Composable
-fun NewTask(currentTask: TaskBuilder?, newTaskHandler: (String) -> Unit) {
-    currentTask?.let {
-        val state = rememberTextFieldState(it.title)
-        Row {
-            OutlinedTextField(
-                state = state,
-                label = { Text("Creating new task...") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface
-                ),
+        AppScaffold(
+            selectedDestination = selectedDestination,
+            onDestinationSelected = { index ->
+                navController.navigate(Destination.entries[index].name)
+                selectedDestination = index
+            },
+            modifier = Modifier
+        ) { contentPadding ->
+            AppNavHost(
+                navController = navController,
+                startDestination = Destination.TASKS.name,
+                modifier = Modifier.padding(contentPadding)
             )
-            Button({ newTaskHandler(state.text.toString()) }) { Text("+") }
         }
     }
-}
-
-@Preview
-@Composable
-fun NewTaskButton(handler: () -> Unit, handler2: () -> Unit, show: Boolean) {
-    val text = if (show) "+ Create Task" else "Cancel"
-    Button(onClick = { if (show) handler() else handler2() }) { Text(text) }
 }
