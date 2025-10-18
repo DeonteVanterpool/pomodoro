@@ -1,4 +1,4 @@
-# Noladoro — Minimal Pomodoro
+# Noladoro — Minimalist Pomodoro
 
 A minimalist Pomodoro timer where each session is tied to a specific task. Built in Kotlin with Jetpack Compose — simple, focused, and labeled so you always know what you're working on. Built with Material UI and for AMOLED displays.
 
