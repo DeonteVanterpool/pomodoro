@@ -9,37 +9,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.pomodoro.models.Task
 import com.example.pomodoro.models.TaskBuilder
-import com.example.pomodoro.ui.screens.tasks.components.NewTaskButton
 import com.example.pomodoro.ui.screens.tasks.components.TaskCreator
-import com.example.pomodoro.ui.screens.tasks.components.TaskItem
+import com.example.pomodoro.ui.screens.tasks.components.TaskCreatorEvent
 import com.example.pomodoro.ui.screens.tasks.components.TaskItemList
 
+sealed class TaskScreenEvent {
+    data class AddTask(val task: Task) : TaskScreenEvent()
+}
+
 @Composable
-fun TasksScreen() {
-    var currentTask by remember { mutableStateOf<TaskBuilder?>(null) }
-    val taskList = remember { mutableStateListOf<Task>() }
+fun TasksScreen(taskList: List<Task>, eventHandler: (TaskScreenEvent) -> Unit) {
+    var buildingTask by remember { mutableStateOf<Boolean>(false) }
 
-    fun createNewTaskHandler() {
-        currentTask = TaskBuilder()
-    }
-
-    fun cancelNewTaskHandler() {
-        currentTask = null
-    }
-
-    fun newTaskHandler(text: String) {
-        currentTask?.let {
-            it.title = text
-            taskList.add(it.build())
-            currentTask = null
-            return
+    fun taskCreatorEventHandler(e: TaskCreatorEvent) {
+        when (e) {
+            is TaskCreatorEvent.OpenTaskInput -> {
+                buildingTask = true
+            }
+            is TaskCreatorEvent.CloseTaskInput -> {
+                buildingTask = false
+            }
+            is TaskCreatorEvent.SubmitTask -> {
+                if (buildingTask) {
+                    eventHandler(TaskScreenEvent.AddTask(e.task.build()))
+                    buildingTask = false
+                } else {
+                    throw UnsupportedOperationException("Current task is null!")
+                }
+            }
         }
-        throw UnsupportedOperationException("Current task is null!")
     }
 
     Column {
-        TaskCreator(currentTask, { text -> newTaskHandler(text) }) // conditionally renders if the new task button has been clicked
-        NewTaskButton({ createNewTaskHandler() }, { cancelNewTaskHandler() }, currentTask == null)
+        TaskCreator(buildingTask, { e -> taskCreatorEventHandler(e) }) // conditionally renders if the new task button has been clicked
         TaskItemList(taskList)
     }
 }
