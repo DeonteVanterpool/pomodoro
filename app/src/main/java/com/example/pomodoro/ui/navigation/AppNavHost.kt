@@ -26,9 +26,9 @@ fun AppNavHost(
 ) {
     fun taskScreenEventHandler(e: TaskScreenEvent) {
         when (e) {
-            is TaskScreenEvent.AddTask -> {
-                viewModel.addTask(e.task)
-            }
+            is TaskScreenEvent.StartTask -> navController.navigate(Destination.POMODORO.name)
+            is TaskScreenEvent.AddTask -> {}
+            is TaskScreenEvent.DeleteTask -> {}
         }
     }
     NavHost(
@@ -40,7 +40,7 @@ fun AppNavHost(
 
     ) {
         composable(Destination.TASKS.name) {
-            TasksScreen(tasks = viewModel.tasks.collectAsState().value, { e -> taskScreenEventHandler(e) })
+            TasksScreen(tasks = viewModel.tasks.collectAsState().value, { e -> taskScreenEventHandler(e) }, viewModel)
         }
         composable(Destination.POMODORO.name) {
             PomodoroScreen()

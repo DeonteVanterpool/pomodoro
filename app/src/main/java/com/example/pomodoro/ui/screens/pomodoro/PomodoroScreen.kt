@@ -7,9 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.pomodoro.ui.TasksViewModel
 
 @Composable
-fun PomodoroScreen() {
+fun PomodoroScreen(viewModel: TasksViewModel = hiltViewModel()) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Pomodoro Timer",
