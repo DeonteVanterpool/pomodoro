@@ -1,6 +1,8 @@
 package com.example.pomodoro
 
+import android.app.Application
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -31,22 +33,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pomodoro.models.Task
 import com.example.pomodoro.models.TaskBuilder
+import com.example.pomodoro.ui.TasksViewModel
 import com.example.pomodoro.ui.navigation.AppNavHost
 import com.example.pomodoro.ui.navigation.AppScaffold
 import com.example.pomodoro.ui.navigation.Destination
 import com.example.pomodoro.ui.theme.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppTheme(content = { App() })
+            App()
         }
     }
 }
@@ -54,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 @Preview
 @Composable
 fun App() {
+    val tasksViewModel: TasksViewModel = hiltViewModel()
+
     AppTheme {
         val navController = rememberNavController()
         var selectedDestination by rememberSaveable {
@@ -71,7 +80,8 @@ fun App() {
             AppNavHost(
                 navController = navController,
                 startDestination = Destination.TASKS.name,
-                modifier = Modifier.padding(contentPadding)
+                modifier = Modifier.padding(contentPadding),
+                tasksViewModel
             )
         }
     }

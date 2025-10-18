@@ -9,16 +9,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.pomodoro.models.Task
 import com.example.pomodoro.models.TaskBuilder
+import com.example.pomodoro.ui.TasksViewModel
 import com.example.pomodoro.ui.screens.tasks.components.TaskCreator
 import com.example.pomodoro.ui.screens.tasks.components.TaskCreatorEvent
 import com.example.pomodoro.ui.screens.tasks.components.TaskItemList
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 sealed class TaskScreenEvent {
     data class AddTask(val task: Task) : TaskScreenEvent()
 }
 
 @Composable
-fun TasksScreen(taskList: List<Task>, eventHandler: (TaskScreenEvent) -> Unit) {
+fun TasksScreen(tasks: List<Task>, eventHandler: (TaskScreenEvent) -> Unit) {
     var buildingTask by remember { mutableStateOf<Boolean>(false) }
 
     fun taskCreatorEventHandler(e: TaskCreatorEvent) {
@@ -42,6 +45,6 @@ fun TasksScreen(taskList: List<Task>, eventHandler: (TaskScreenEvent) -> Unit) {
 
     Column {
         TaskCreator(buildingTask, { e -> taskCreatorEventHandler(e) }) // conditionally renders if the new task button has been clicked
-        TaskItemList(taskList)
+        TaskItemList(tasks = tasks)
     }
 }

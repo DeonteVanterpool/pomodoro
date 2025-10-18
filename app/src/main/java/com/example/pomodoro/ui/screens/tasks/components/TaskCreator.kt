@@ -10,7 +10,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.pomodoro.models.TaskBuilder
+import com.example.pomodoro.ui.TasksViewModel
 
 sealed class TaskCreatorEvent {
     object OpenTaskInput : TaskCreatorEvent()
@@ -20,7 +22,7 @@ sealed class TaskCreatorEvent {
 
 @Preview
 @Composable
-fun TaskCreator(dialogOpen: Boolean, eventHandler: (TaskCreatorEvent) -> Unit) {
+fun TaskCreator(dialogOpen: Boolean, eventHandler: (TaskCreatorEvent) -> Unit, viewModel: TasksViewModel = hiltViewModel()  ) {
     if (dialogOpen) {
         val state = rememberTextFieldState("")
         Column {
@@ -37,6 +39,7 @@ fun TaskCreator(dialogOpen: Boolean, eventHandler: (TaskCreatorEvent) -> Unit) {
                     val builder = TaskBuilder()
                     builder.title = state.text.toString()
                     eventHandler(TaskCreatorEvent.SubmitTask(builder))
+                    viewModel.addTask(builder.build())
                 }) { Text("+") }
             }
             Button(onClick = { eventHandler(TaskCreatorEvent.CloseTaskInput) }) { Text("Cancel") }
