@@ -43,7 +43,7 @@ fun AppNavHost(
             TasksScreen(tasks = viewModel.tasks.collectAsState().value, { e -> taskScreenEventHandler(e) }, viewModel)
         }
         composable(Destination.POMODORO.name) {
-            PomodoroScreen()
+            PomodoroScreen(viewModel)
         }
     }
 }
