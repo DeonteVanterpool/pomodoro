@@ -46,17 +46,17 @@ In-memory Storage
 
 ## Future Expansion
 
-Edit / Delete tasks
+- Edit / Delete tasks
 
-Persistent storage for tasks (DataStore / Room)
+- Persistent storage for tasks (DataStore / Room)
 
-Notification when a timer completes
+- Notification when a timer completes
 
-Estimate the number of pomodoros for a task, and increment the counter when a pomodoro is finished
+- Estimate the number of pomodoros for a task, and increment the counter when a pomodoro is finished
 
-Export/import session history (CSV)
+- Export/import session history (CSV)
 
-Contributing
+## Contributing
 
 Open to PRs that keep the UI simple. Please be descriptive if you can with your PRs.
 
