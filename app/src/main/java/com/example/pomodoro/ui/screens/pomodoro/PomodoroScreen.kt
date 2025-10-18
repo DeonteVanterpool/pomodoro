@@ -24,7 +24,7 @@ fun PomodoroScreen(viewModel: TasksViewModel = hiltViewModel()) {
         )
         Text(
             text = currentTask,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(top = 16.dp)
         )
