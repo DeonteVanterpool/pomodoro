@@ -32,9 +32,9 @@ Gradle (the project includes a wrapper)
 
 Build & run
 
-# from the project root
+### from the project root
 ./gradlew assembleDebug
-# or open project in Android Studio and run on emulator / device
+### or open project in Android Studio and run on emulator / device
 
 Architecture (high level)
 
