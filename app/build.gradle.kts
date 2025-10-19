@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.fragment)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.kotlinx.datetime) // Or the latest version
 
     val composeBom = platform("androidx.compose:compose-bom:2025.10.00")
     implementation(composeBom)

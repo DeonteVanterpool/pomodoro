@@ -1,25 +1,23 @@
 package com.example.pomodoro.ui.screens.pomodoro.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.pomodoro.ui.TasksViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.time.delay
+import java.time.LocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 
 sealed class TimerEvent {
     object Start: TimerEvent()
@@ -29,9 +27,10 @@ sealed class TimerEvent {
 
 @Composable
 fun Timer(eventListener: (TimerEvent) -> Unit) {
-    var currentTime by remember { mutableStateOf(50.minutes) }
+    var remainingTime by remember { mutableStateOf(50.minutes) }
+    val endTime = LocalDateTime.now().plus(remainingTime.toJavaDuration())
     Text(
-        text = formatTime(currentTime),
+        text = formatTime(remainingTime),
         style = MaterialTheme.typography.displayLarge,
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 16.dp),
@@ -39,7 +38,7 @@ fun Timer(eventListener: (TimerEvent) -> Unit) {
     LaunchedEffect(Unit) {
         while(true) {
             delay(1.seconds)
-            currentTime = currentTime.minus(1.seconds)
+            remainingTime = java.time.Duration.between(LocalDateTime.now(), endTime).toKotlinDuration()
         }
     }
 }
