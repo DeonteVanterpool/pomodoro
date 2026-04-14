@@ -28,9 +28,6 @@ sealed class TimerEvent {
 @Composable
 fun Timer(eventListener: (TimerEvent) -> Unit) {
     var remainingTime by remember { mutableStateOf(50.minutes) }
-    val endTime = remember {
-        LocalDateTime.now().plus(remainingTime.toJavaDuration())
-    }
     Text(
         text = formatTime(remainingTime),
         style = MaterialTheme.typography.displayLarge,
@@ -38,6 +35,8 @@ fun Timer(eventListener: (TimerEvent) -> Unit) {
         modifier = Modifier.padding(top = 16.dp),
     )
     LaunchedEffect(Unit) {
+        val endTime =
+            LocalDateTime.now().plus(remainingTime.toJavaDuration())
         while(true) {
             delay(1.seconds)
             remainingTime = java.time.Duration.between(LocalDateTime.now(), endTime).toKotlinDuration()
