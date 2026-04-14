@@ -1,9 +1,12 @@
 package com.example.pomodoro.ui.screens.pomodoro.components
 
+import android.view.WindowManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +37,14 @@ fun Timer(eventListener: (TimerEvent) -> Unit) {
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 16.dp),
     )
+    val activity = LocalActivity.current
+    DisposableEffect(Unit) {
+        val window = activity?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
     LaunchedEffect(Unit) {
         val endTime =
             LocalDateTime.now().plus(remainingTime.toJavaDuration())
