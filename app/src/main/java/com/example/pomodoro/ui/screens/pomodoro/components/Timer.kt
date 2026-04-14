@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
+import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -58,7 +59,7 @@ fun Timer(eventListener: (TimerEvent) -> Unit) {
 fun formatTime(time: Duration): String {
     var minutes = ""
     var seconds = ""
-    time.toComponents { _, m, s, _ -> {minutes = "$m"; seconds = "$s"} }()
+    time.toComponents { _, m, s, _ -> {minutes = "${m.absoluteValue}"; seconds = "${s.absoluteValue}"} }()
 
-    return minutes.padStart(2, '0') + ":" + seconds.padStart(2, '0')
+    return (if (time.isNegative()) "-" else "") + minutes.padStart(2, '0') + ":" + seconds.padStart(2, '0')
 }
